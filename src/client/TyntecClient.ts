@@ -19,11 +19,24 @@ export class TyntecClient {
 			body: data ? JSON.stringify(data) : undefined,
 		});
 
+		const responseData = await response.json();
+
 		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
+			throw new Error(
+				JSON.stringify({
+					statusCode: response.status,
+					statusText: response.statusText,
+					data: responseData,
+					endpoint,
+				})
+			);
 		}
 
-		return response.json();
+		return {
+			statusCode: response.status,
+			statusText: response.statusText,
+			data: responseData,
+		};
 	}
 
 	async sendMessage(message: Message): Promise<any> {
