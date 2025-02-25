@@ -1,0 +1,37 @@
+{
+	"name": "tyntec-sdk",
+	"version": "0.0.1",
+	"description": "TypeScript SDK for Tyntec Conversations API V3",
+	"main": "dist/tyntec-sdk.js",
+	"types": "dist/tyntec-sdk.d.ts",
+	"engines": {
+		"node": "20.18.2",
+		"npm": "10.8.2"
+	},
+	"scripts": {
+		"build": "tsc",
+		"test": "jest",
+		"prepare": "npm run build"
+	},
+	"keywords": [
+		"tyntec",
+		"whatsapp",
+		"messaging",
+		"api",
+		"sdk"
+	],
+	"author": "",
+	"license": "MIT",
+	"devDependencies": {
+		"@types/jest": "^29.0.0",
+		"@types/node": "^20.0.0",
+		"jest": "^29.0.0",
+		"ts-jest": "^29.0.0",
+		"ts-node-dev": "^2.0.0",
+		"tsconfig-paths": "^4.2.0",
+		"typescript": "^5.7.0"
+	},
+	"dependencies": {
+		"node-fetch": "^3.3.0"
+	}
+}
