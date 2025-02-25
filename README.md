@@ -1,11 +1,11 @@
-# tyntecsdk# Tyntec Conversations SDK
+# Tyntec SDK
 
 A TypeScript SDK for the Tyntec Conversations API V3, making it easy to send WhatsApp messages using various content types.
 
 ## Installation
 
 ```bash
-npm install tyntec-conversations-sdk
+npm install tyntec-sdk
 ```
 
 ## Usage
@@ -13,7 +13,7 @@ npm install tyntec-conversations-sdk
 First, import and initialize the client:
 
 ```typescript
-import {TyntecClient} from 'tyntec-conversations-sdk';
+import {TyntecClient} from 'tyntec-sdk';
 
 const client = new TyntecClient('your-api-key');
 ```
@@ -22,8 +22,8 @@ const client = new TyntecClient('your-api-key');
 
 ```typescript
 await client.sendTextMessage(
-	'whatsapp:+1234567890', // from
-	'whatsapp:+0987654321', // to
+	'1234567890', // from
+	'0987654321', // to
 	'Hello, World!' // text
 );
 ```
@@ -32,43 +32,33 @@ await client.sendTextMessage(
 
 ```typescript
 // Send an image
-await client.sendImageMessage(
-	'whatsapp:+1234567890',
-	'whatsapp:+0987654321',
-	'https://example.com/image.jpg',
-	'Optional caption'
-);
+await client.sendImageMessage('1234567890', '0987654321', 'https://example.com/image.jpg', 'Optional caption');
 
 // Send a video
-await client.sendVideoMessage(
-	'whatsapp:+1234567890',
-	'whatsapp:+0987654321',
-	'https://example.com/video.mp4',
-	'Optional caption'
-);
+await client.sendVideoMessage('1234567890', '0987654321', 'https://example.com/video.mp4', 'Optional caption');
 
 // Send a document
 await client.sendDocumentMessage(
-	'whatsapp:+1234567890',
-	'whatsapp:+0987654321',
+	'1234567890',
+	'0987654321',
 	'https://example.com/document.pdf',
 	'Optional caption',
 	'document.pdf'
 );
 
 // Send an audio message
-await client.sendAudioMessage('whatsapp:+1234567890', 'whatsapp:+0987654321', 'https://example.com/audio.mp3');
+await client.sendAudioMessage('1234567890', '0987654321', 'https://example.com/audio.mp3');
 
 // Send a sticker
-await client.sendStickerMessage('whatsapp:+1234567890', 'whatsapp:+0987654321', 'https://example.com/sticker.webp');
+await client.sendStickerMessage('1234567890', '0987654321', 'https://example.com/sticker.webp');
 ```
 
 ### Sending Template Messages
 
 ```typescript
 await client.sendTemplateMessage(
-	'whatsapp:+1234567890',
-	'whatsapp:+0987654321',
+	'1234567890',
+	'0987654321',
 	'your_template_id',
 	'en',
 	[
