@@ -1,4 +1,12 @@
 import {Message, MessageContent, TemplateComponent} from '../types/message';
+import {z} from 'zod';
+import {
+	whatsAppBaseFields,
+	mediaContentSchema,
+	locationContentSchema,
+	contactSchema,
+	reactionContentSchema,
+} from '../models/messages/whatsapp';
 
 export class TyntecClient {
 	private baseUrl: string;
@@ -153,5 +161,118 @@ export class TyntecClient {
 				},
 			},
 		});
+	}
+
+	async sendWhatsAppMessage(message: any): Promise<any> {
+		// Base message validation
+		const baseMessage = whatsAppBaseFields.parse({
+			from: message.from,
+			senderName: message.senderName,
+			urlPreviewDisplayed: message.urlPreviewDisplayed,
+		});
+
+		// Validate content based on type
+		let validatedContent: MessageContent;
+		switch (message.content?.contentType) {
+			case 'text':
+				validatedContent = z
+					.object({
+						contentType: z.literal('text'),
+						text: z.string(),
+					})
+					.parse(message.content);
+				break;
+			case 'image':
+				validatedContent = z
+					.object({
+						contentType: z.literal('image'),
+						image: mediaContentSchema,
+					})
+					.parse(message.content);
+				break;
+			case 'video':
+				validatedContent = z
+					.object({
+						contentType: z.literal('video'),
+						video: mediaContentSchema,
+					})
+					.parse(message.content);
+				break;
+			case 'document':
+				validatedContent = z
+					.object({
+						contentType: z.literal('document'),
+						document: mediaContentSchema.extend({
+							filename: z.string().optional(),
+						}),
+					})
+					.parse(message.content);
+				break;
+			case 'audio':
+				validatedContent = z
+					.object({
+						contentType: z.literal('audio'),
+						audio: z.object({
+							url: z.string().url(),
+						}),
+					})
+					.parse(message.content);
+				break;
+			case 'sticker':
+				validatedContent = z
+					.object({
+						contentType: z.literal('sticker'),
+						sticker: z.object({
+							url: z.string().url(),
+						}),
+					})
+					.parse(message.content);
+				break;
+			case 'template':
+				validatedContent = z
+					.object({
+						contentType: z.literal('template'),
+						template: z.object({
+							templateId: z.string(),
+							templateLanguage: z.string(),
+							components: z.object({
+								body: z
+									.array(
+										z.object({
+											type: z.enum(['text', 'quick_reply']),
+											text: z.string().optional(),
+											index: z.number().optional(),
+											payload: z.string().optional(),
+										})
+									)
+									.optional(),
+								button: z
+									.array(
+										z.object({
+											type: z.enum(['text', 'quick_reply']),
+											text: z.string().optional(),
+											index: z.number().optional(),
+											payload: z.string().optional(),
+										})
+									)
+									.optional(),
+							}),
+						}),
+					})
+					.parse(message.content);
+				break;
+			default:
+				throw new Error(`Unsupported content type: ${message.content?.contentType}`);
+		}
+
+		// Construct the validated message
+		const validatedMessage: Message = {
+			...baseMessage,
+			to: message.to,
+			channel: 'whatsapp' as const,
+			content: validatedContent,
+		};
+
+		return this.sendMessage(validatedMessage);
 	}
 }
