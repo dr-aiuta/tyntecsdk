@@ -73,14 +73,10 @@ describe('TyntecClient', () => {
 
 	it('sendTemplateMessage sends a valid template message', async () => {
 		mockFetchResponse({id: 'tpl1'});
-		const res = await client.sendTemplateMessage(
-			'from',
-			'to',
-			'templateId',
-			'en',
-			[{type: 'text', text: 'body'}],
-			[{type: 'quick_reply', payload: 'btn'}]
-		);
+		const res = await client.sendTemplateMessage('from', 'to', 'templateId', 'en', {
+			body: [{type: 'text', text: 'body'}],
+			button: [{type: 'quick_reply', index: 0, payload: 'btn'}],
+		});
 		expect(fetch).toHaveBeenCalled();
 		expect(res.data).toEqual({id: 'tpl1'});
 	});
@@ -90,6 +86,7 @@ describe('TyntecClient', () => {
 		const res = await client.sendWhatsAppMessage({
 			from: 'from',
 			to: 'to',
+			channel: 'whatsapp',
 			content: {contentType: 'text', text: 'hi'},
 		});
 		expect(fetch).toHaveBeenCalled();
@@ -101,8 +98,9 @@ describe('TyntecClient', () => {
 			client.sendWhatsAppMessage({
 				from: 'from',
 				to: 'to',
+				channel: 'whatsapp',
 				content: {contentType: 'text'}, // missing text
-			})
+			} as any)
 		).rejects.toThrow();
 	});
 

@@ -2,6 +2,10 @@
 
 A TypeScript SDK for the Tyntec Conversations API V3, making it easy to send WhatsApp messages using various content types.
 
+## Requirements
+
+- Node.js >= 20.0.0
+
 ## Installation
 
 ```bash
@@ -56,20 +60,41 @@ await client.sendStickerMessage('1234567890', '0987654321', 'https://example.com
 ### Sending Template Messages
 
 ```typescript
-await client.sendTemplateMessage(
-	'1234567890',
-	'0987654321',
-	'your_template_id',
-	'en',
-	[
+await client.sendTemplateMessage('1234567890', '0987654321', 'your_template_id', 'en', {
+	header: [
+		{type: 'text', text: 'Header text'},
+		// or { type: 'image', image: { url: 'https://example.com/header.jpg' } }, etc.
+	],
+	body: [
 		{type: 'text', text: 'John'},
 		{type: 'text', text: '123456'},
 	],
-	[
-		{type: 'quick_reply', text: 'Yes', payload: 'YES'},
-		{type: 'quick_reply', text: 'No', payload: 'NO'},
-	]
-);
+	button: [
+		{type: 'quick_reply', index: 0, payload: 'YES'},
+		{type: 'quick_reply', index: 1, payload: 'NO'},
+		// or { type: 'url', index: 2, text: 'Visit' }
+	],
+});
+```
+
+### Sending Custom WhatsApp Messages
+
+For advanced use cases, you can send any valid WhatsApp message object (validated against the schema):
+
+```typescript
+import type {Message} from 'tyntec-sdk';
+
+const message: Message = {
+	from: '1234567890',
+	to: '0987654321',
+	channel: 'whatsapp',
+	content: {
+		contentType: 'text',
+		text: 'Hello from a custom message!',
+	},
+};
+
+await client.sendWhatsAppMessage(message);
 ```
 
 ## API Reference
@@ -97,15 +122,22 @@ All methods return a Promise that resolves to the API response.
 - `sendDocumentMessage(from: string, to: string, url: string, caption?: string, filename?: string)`
 - `sendAudioMessage(from: string, to: string, url: string)`
 - `sendStickerMessage(from: string, to: string, url: string)`
-- `sendTemplateMessage(from: string, to: string, templateId: string, templateLanguage: string, bodyComponents?: TemplateComponent[], buttonComponents?: TemplateComponent[])`
+- `sendTemplateMessage(from: string, to: string, templateId: string, templateLanguage: string, components: TemplateComponents)`
+- `sendWhatsAppMessage(message: Message)` — Validates and sends any WhatsApp message object
+- `sendMessage(message: Message)` — Sends any message object (no validation)
+
+#### Types
+
+The SDK exports TypeScript types for all message structures, including `Message`, `TemplateComponent`, and more, for advanced usage and type safety.
 
 ## Error Handling
 
 The SDK throws errors when:
 
-- The API request fails
+- The API request fails (non-2xx status code)
 - The API returns a non-200 status code
 - Required parameters are missing
+- The message object fails validation (for `sendWhatsAppMessage`)
 
 Example error handling:
 

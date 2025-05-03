@@ -57,12 +57,10 @@ export const templateComponentsSchema = z.object({
 });
 
 export const templateMessageSchema = whatsAppBaseFields.extend({
-	content: z.object({
-		contentType: z.literal('template'),
-		template: z.object({
-			templateId: z.string(),
-			templateLanguage: z.string(),
-			components: templateComponentsSchema,
-		}),
+	contentType: z.literal('template'),
+	template: z.object({
+		templateId: z.string(),
+		templateLanguage: z.string(),
+		components: templateComponentsSchema,
 	}),
 });

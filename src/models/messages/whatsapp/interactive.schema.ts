@@ -70,11 +70,9 @@ export const interactiveComponentsSchema = z.object({
 
 // Extending the base schema with interactive content
 export const interactiveMessageSchema = whatsAppBaseFields.extend({
-	content: z.object({
-		contentType: z.literal('interactive'),
-		interactive: z.object({
-			subType: z.enum(['buttons', 'list', 'product', 'productList']),
-			components: interactiveComponentsSchema,
-		}),
+	contentType: z.literal('interactive'),
+	interactive: z.object({
+		subType: z.enum(['buttons', 'list', 'product', 'productList']),
+		components: interactiveComponentsSchema,
 	}),
 });

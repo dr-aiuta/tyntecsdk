@@ -1,7 +1,6 @@
 import {z} from 'zod';
 
 export const whatsAppBaseFields = z.object({
-	from: z.string(),
 	senderName: z.string().optional(),
 	urlPreviewDisplayed: z.boolean().optional(),
 });

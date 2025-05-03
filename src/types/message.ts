@@ -66,6 +66,20 @@ interface TemplateContent extends BaseContent {
 	};
 }
 
+interface InteractiveComponent {
+	type: 'text' | 'quick_reply';
+	text?: string;
+	index?: number;
+	payload?: string;
+}
+
+interface InteractiveContent extends BaseContent {
+	contentType: 'interactive';
+	interactive: {
+		subType: 'buttons' | 'list' | 'product' | 'productList';
+		components: InteractiveComponent[];
+	};
+}
 export type MessageContent =
 	| TextContent
 	| ImageContent
@@ -73,7 +87,8 @@ export type MessageContent =
 	| DocumentContent
 	| AudioContent
 	| StickerContent
-	| TemplateContent;
+	| TemplateContent
+	| InteractiveContent;
 
 export interface Message {
 	from: string;
@@ -83,3 +98,4 @@ export interface Message {
 }
 
 export type {TemplateComponent};
+export type {InteractiveComponent};
