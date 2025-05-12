@@ -1,6 +1,6 @@
 # Tyntec SDK
 
-A TypeScript SDK for the Tyntec Conversations API V3, making it easy to send WhatsApp messages using various content types.
+A TypeScript SDK for the Tyntec Conversations API V3, making it easy to send WhatsApp messages using various content types and manage WhatsApp templates.
 
 ## Requirements
 
@@ -17,9 +17,9 @@ npm install tyntec-sdk
 First, import and initialize the client:
 
 ```typescript
-import {TyntecClient} from 'tyntec-sdk';
+import {tyntecClient} from 'tyntec-sdk';
 
-const client = new TyntecClient('your-api-key');
+const client = tyntecClient({apiKey: 'your-api-key'});
 ```
 
 ### Sending Text Messages
@@ -97,16 +97,63 @@ const message: Message = {
 await client.sendWhatsAppMessage(message);
 ```
 
-## API Reference
+---
 
-### TyntecClient
+## Managing WhatsApp Templates
 
-The main class for interacting with the Tyntec API.
+You can manage WhatsApp message templates using the following methods:
 
-#### Constructor
+### List Templates
 
 ```typescript
-constructor(apiKey: string, baseUrl?: string)
+const res = await client.listTemplates('yourAccountId');
+console.log(res.data); // Array of templates
+```
+
+### Get a Template
+
+```typescript
+const res = await client.getTemplate('templateName', 'yourAccountId');
+console.log(res.data); // Template details
+```
+
+### Create a Template
+
+```typescript
+const templatePayload = {
+	name: 'newTemplate',
+	language: 'en',
+	// ...other template fields
+};
+const res = await client.createTemplate(templatePayload, 'yourAccountId');
+console.log(res.data); // Created template info
+```
+
+### Add a Template Localization
+
+```typescript
+const localizationPayload = {
+	language: 'es',
+	body: 'Hola',
+	// ...other localization fields
+};
+const res = await client.addTemplateLocalization('templateName', localizationPayload, 'yourAccountId');
+console.log(res.data); // Success info
+```
+
+---
+
+## API Reference
+
+### tyntecClient
+
+The main function for initializing the Tyntec API client.
+
+#### Initialization
+
+```typescript
+import {tyntecClient} from 'tyntec-sdk';
+const client = tyntecClient({apiKey: 'your-api-key', baseUrl: string});
 ```
 
 - `apiKey`: Your Tyntec API key
@@ -125,6 +172,10 @@ All methods return a Promise that resolves to the API response.
 - `sendTemplateMessage(from: string, to: string, templateId: string, templateLanguage: string, components: TemplateComponents)`
 - `sendWhatsAppMessage(message: Message)` — Validates and sends any WhatsApp message object
 - `sendMessage(message: Message)` — Sends any message object (no validation)
+- `listTemplates(accountId: string)` — List all WhatsApp templates for an account
+- `getTemplate(templateName: string, accountId: string)` — Get a specific WhatsApp template
+- `createTemplate(templatePayload: object, accountId: string)` — Create a new WhatsApp template
+- `addTemplateLocalization(templateName: string, localizationPayload: object, accountId: string)` — Add a localization to a template
 
 #### Types
 
@@ -148,6 +199,14 @@ try {
 	console.error('Failed to send message:', error);
 }
 ```
+
+## Contributing
+
+This SDK is open source and welcomes contributions from the community! If you have ideas, bug fixes, or new features, feel free to open an issue or submit a pull request.
+
+Whether you're fixing a typo, improving documentation, or adding new functionality, your help is appreciated. See the repository for guidelines and details.
+
+**Let's make messaging easier together!**
 
 ## License
 

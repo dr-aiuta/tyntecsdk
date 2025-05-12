@@ -1,4 +1,4 @@
-import {TyntecClient} from './TyntecClient';
+import {tyntecClient} from './index';
 
 // Mock fetch globally
 (globalThis as any).fetch = jest.fn();
@@ -6,10 +6,10 @@ import {TyntecClient} from './TyntecClient';
 describe('TyntecClient', () => {
 	const apiKey = 'test-api-key';
 	const baseUrl = 'https://api.tyntec.com/conversations/v3';
-	let client: TyntecClient;
+	let client: ReturnType<typeof tyntecClient>;
 
 	beforeEach(() => {
-		client = new TyntecClient(apiKey, baseUrl);
+		client = tyntecClient({apiKey});
 		(fetch as jest.Mock).mockClear();
 	});
 
@@ -112,5 +112,61 @@ describe('TyntecClient', () => {
 			json: async () => ({error: 'fail'}),
 		});
 		await expect(client.sendTextMessage('from', 'to', 'fail')).rejects.toThrow(/400/);
+	});
+
+	it('listTemplates fetches all templates', async () => {
+		mockFetchResponse([{name: 'template1'}, {name: 'template2'}]);
+		const res = await client.listTemplates('accountId');
+		expect(fetch).toHaveBeenCalledWith(
+			expect.stringContaining('/channels/whatsapp/accounts/accountId/templates'),
+			expect.objectContaining({
+				method: 'GET',
+				headers: expect.objectContaining({apikey: apiKey}),
+			})
+		);
+		expect(res.data).toEqual([{name: 'template1'}, {name: 'template2'}]);
+	});
+
+	it('getTemplate fetches a specific template', async () => {
+		mockFetchResponse({name: 'template1'});
+		const res = await client.getTemplate('template1', 'accountId');
+		expect(fetch).toHaveBeenCalledWith(
+			expect.stringContaining('/channels/whatsapp/accounts/accountId/templates/template1'),
+			expect.objectContaining({
+				method: 'GET',
+				headers: expect.objectContaining({apikey: apiKey}),
+			})
+		);
+		expect(res.data).toEqual({name: 'template1'});
+	});
+
+	it('createTemplate creates a new template', async () => {
+		const templatePayload = {name: 'newTemplate', language: 'en'};
+		mockFetchResponse({id: 'tpl2'});
+		const res = await client.createTemplate(templatePayload, 'accountId');
+		expect(fetch).toHaveBeenCalledWith(
+			expect.stringContaining('/channels/whatsapp/accounts/accountId/templates'),
+			expect.objectContaining({
+				method: 'POST',
+				headers: expect.objectContaining({apikey: apiKey}),
+				body: expect.stringContaining('newTemplate'),
+			})
+		);
+		expect(res.data).toEqual({id: 'tpl2'});
+	});
+
+	it('addTemplateLocalization adds a localization to a template', async () => {
+		const localizationPayload = {language: 'es', body: 'Hola'};
+		mockFetchResponse({success: true});
+		const res = await client.addTemplateLocalization('template1', localizationPayload, 'accountId');
+		expect(fetch).toHaveBeenCalledWith(
+			expect.stringContaining('/channels/whatsapp/accounts/accountId/templates/template1/localizations'),
+			expect.objectContaining({
+				method: 'POST',
+				headers: expect.objectContaining({apikey: apiKey}),
+				body: expect.stringContaining('Hola'),
+			})
+		);
+		expect(res.data).toEqual({success: true});
 	});
 });
