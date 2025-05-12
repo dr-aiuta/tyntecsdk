@@ -1,2 +1,2 @@
 export * from './types/message';
-export * from './client/TyntecClient.base';
+export * from './client';
