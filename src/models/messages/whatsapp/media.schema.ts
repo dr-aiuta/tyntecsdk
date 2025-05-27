@@ -20,23 +20,28 @@ const documentContentSchema = z.object({
 export const mediaMessageSchema = z.union([
 	whatsAppBaseFields.extend({
 		contentType: z.literal('image'),
-		image: mediaContentSchema,
+		image: mediaContentSchema.optional(),
+		// TODO: use separate schema for messageRequest since files could be loaded separately
 	}),
 	whatsAppBaseFields.extend({
 		contentType: z.literal('video'),
-		video: mediaContentSchema,
+		video: mediaContentSchema.optional(),
+		// TODO: use separate schema for messageRequest since files could be loaded separately
 	}),
 	whatsAppBaseFields.extend({
 		contentType: z.literal('document'),
-		document: documentContentSchema,
+		document: documentContentSchema.optional(),
+		// TODO: use separate schema for messageRequest since files could be loaded separately
 	}),
 	whatsAppBaseFields.extend({
 		contentType: z.literal('audio'),
-		audio: mediaContentSchema,
+		audio: mediaContentSchema.optional(),
+		// TODO: use separate schema for messageRequest since files could be loaded separately
 	}),
 	whatsAppBaseFields.extend({
 		contentType: z.literal('sticker'),
-		sticker: mediaContentSchema,
+		sticker: mediaContentSchema.optional(),
+		// TODO: use separate schema for messageRequest since files could be loaded separately
 	}),
 ]);
 
