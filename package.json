@@ -1,6 +1,6 @@
 {
 	"name": "tyntec-sdk",
-	"version": "0.0.6",
+	"version": "0.0.7",
 	"description": "TypeScript SDK for Tyntec Conversations API V3",
 	"main": "dist/tyntec-sdk.js",
 	"types": "dist/tyntec-sdk.d.ts",
