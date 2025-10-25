@@ -6,5 +6,5 @@ export type TyntecConfig = {
 };
 
 export interface RequestHttp {
-	send: (method: 'GET' | 'POST', endpoint: string, body?: unknown) => Promise<unknown>;
+	send: (method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE', endpoint: string, body?: unknown) => Promise<unknown>;
 }

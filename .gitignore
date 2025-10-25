@@ -132,3 +132,6 @@ dist
 
 # Dev
 dev
+
+# Cursor
+.cursor

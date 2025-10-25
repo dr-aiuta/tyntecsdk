@@ -2,6 +2,7 @@ export * from './base.schema';
 export * from './interactive.schema';
 export * from './template.schema';
 export * from './media.schema';
+export * from './templateManagement.schema';
 
 // Combined schema for all WhatsApp message types
 import {z} from 'zod';

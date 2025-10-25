@@ -141,6 +141,36 @@ const res = await client.addTemplateLocalization('templateName', localizationPay
 console.log(res.data); // Success info
 ```
 
+### List Template Localizations
+
+```typescript
+const res = await client.listLocalizations('templateName', 'yourAccountId');
+console.log(res.data); // Array of localizations for the template
+```
+
+### Edit a Template
+
+```typescript
+const updates = {
+	category: 'MARKETING',
+	components: [
+		{
+			type: 'BODY',
+			text: 'Updated body text with {{1}} placeholder',
+		},
+	],
+};
+const res = await client.editTemplate('templateName', 'en', updates, 'yourAccountId');
+console.log(res.data); // Updated template info
+```
+
+### Delete a Template
+
+```typescript
+const res = await client.deleteTemplate('templateName', 'yourAccountId');
+console.log(res.data); // Deletion confirmation
+```
+
 ---
 
 ## API Reference
@@ -176,6 +206,9 @@ All methods return a Promise that resolves to the API response.
 - `getTemplate(templateName: string, accountId: string)` — Get a specific WhatsApp template
 - `createTemplate(templatePayload: object, accountId: string)` — Create a new WhatsApp template
 - `addTemplateLocalization(templateName: string, localizationPayload: object, accountId: string)` — Add a localization to a template
+- `listLocalizations(templateName: string, accountId?: string)` — List all localizations for a specific template
+- `editTemplate(templateName: string, localizationLanguage: string, updates: object, accountId?: string)` — Edit an existing template (partial update)
+- `deleteTemplate(templateName: string, accountId?: string)` — Delete a WhatsApp template
 
 #### Types
 

@@ -2,11 +2,13 @@
 import {requestHttp} from './requestHttp';
 import {createMessageApi} from './messages';
 import {createTemplateApi} from './templates';
+import {createTemplateManagementApi} from './templatesManagement';
 import {TyntecConfig} from './types';
 
 export interface TyntecClient // façade for consumers
 	extends ReturnType<typeof createMessageApi>,
-		ReturnType<typeof createTemplateApi> {}
+		ReturnType<typeof createTemplateApi>,
+		ReturnType<typeof createTemplateManagementApi> {}
 
 let cached: TyntecClient | null = null;
 
@@ -17,6 +19,7 @@ export function tyntecClient(cfg: TyntecConfig): TyntecClient {
 		cached = {
 			...createMessageApi(http, cfg),
 			...createTemplateApi(http, cfg),
+			...createTemplateManagementApi(http, cfg),
 		};
 	}
 	return cached!;

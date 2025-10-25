@@ -18,6 +18,9 @@ describe('TyntecClient', () => {
 			ok,
 			status,
 			statusText: ok ? 'OK' : 'Bad Request',
+			headers: {
+				get: (name: string) => (name === 'content-type' ? 'application/json' : null),
+			},
 			json: async () => data,
 		});
 	};
@@ -141,7 +144,24 @@ describe('TyntecClient', () => {
 	});
 
 	it('createTemplate creates a new template', async () => {
-		const templatePayload = {name: 'newTemplate', language: 'en'};
+		const templatePayload = {
+			name: 'newTemplate',
+			category: 'UTILITY' as const,
+			localizations: [
+				{
+					language: 'en',
+					components: [
+						{
+							type: 'BODY' as const,
+							text: 'Hello {{1}}',
+							example: {
+								texts: ['World'],
+							},
+						},
+					],
+				},
+			],
+		};
 		mockFetchResponse({id: 'tpl2'});
 		const res = await client.createTemplate(templatePayload, 'accountId');
 		expect(fetch).toHaveBeenCalledWith(
@@ -156,7 +176,18 @@ describe('TyntecClient', () => {
 	});
 
 	it('addTemplateLocalization adds a localization to a template', async () => {
-		const localizationPayload = {language: 'es', body: 'Hola'};
+		const localizationPayload = {
+			language: 'es',
+			components: [
+				{
+					type: 'BODY' as const,
+					text: 'Hola {{1}}',
+					example: {
+						texts: ['Mundo'],
+					},
+				},
+			],
+		};
 		mockFetchResponse({success: true});
 		const res = await client.addTemplateLocalization('template1', localizationPayload, 'accountId');
 		expect(fetch).toHaveBeenCalledWith(

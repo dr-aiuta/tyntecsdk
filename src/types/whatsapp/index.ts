@@ -3,3 +3,4 @@ export * from './base.types';
 export * from './interactive.types';
 export * from './template.types';
 export * from './media.types';
+export * from './templateManagement.types';
